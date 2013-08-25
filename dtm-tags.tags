@@ -1,6 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <wxHexEditor_XML_TAG>
-  <filename path="dtm-tags.tags">
+  <filename path="dtm-tags">
+    <TAG id="16">
+      <start_offset>88</start_offset>
+      <end_offset>89</end_offset>
+      <tag_text>номер прибора</tag_text>
+      <font_colour>#222222</font_colour>
+      <note_colour>#AC035D</note_colour>
+    </TAG>
+    <TAG id="15">
+      <start_offset>86</start_offset>
+      <end_offset>87</end_offset>
+      <tag_text>длина</tag_text>
+      <font_colour>#222222</font_colour>
+      <note_colour>#AC035D</note_colour>
+    </TAG>
+    <TAG id="14">
+      <start_offset>84</start_offset>
+      <end_offset>84</end_offset>
+      <tag_text>температура</tag_text>
+      <font_colour>#222222</font_colour>
+      <note_colour>#AC035D</note_colour>
+    </TAG>
+    <TAG id="13">
+      <start_offset>83</start_offset>
+      <end_offset>83</end_offset>
+      <tag_text>блок</tag_text>
+      <font_colour>#222222</font_colour>
+      <note_colour>#AC035D</note_colour>
+    </TAG>
+    <TAG id="12">
+      <start_offset>81</start_offset>
+      <end_offset>82</end_offset>
+      <tag_text>толщина fixed 10</tag_text>
+      <font_colour>#222222</font_colour>
+      <note_colour>#AC035D</note_colour>
+    </TAG>
+    <TAG id="11">
+      <start_offset>79</start_offset>
+      <end_offset>80</end_offset>
+      <tag_text>диаметр Word</tag_text>
+      <font_colour>#222222</font_colour>
+      <note_colour>#AC035D</note_colour>
+    </TAG>
     <TAG id="10">
       <start_offset>47</start_offset>
       <end_offset>78</end_offset>
