@@ -1,6 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <wxHexEditor_XML_TAG>
   <filename path="dtm-tags">
+    <TAG id="21">
+      <start_offset>100</start_offset>
+      <end_offset>101</end_offset>
+      <tag_text>влияет на все</tag_text>
+      <font_colour>#222222</font_colour>
+      <note_colour>#9AFAFF</note_colour>
+    </TAG>
+    <TAG id="20">
+      <start_offset>98</start_offset>
+      <end_offset>99</end_offset>
+      <tag_text>участник датчик 4</tag_text>
+      <font_colour>#222222</font_colour>
+      <note_colour>#9AFAFF</note_colour>
+    </TAG>
+    <TAG id="19">
+      <start_offset>96</start_offset>
+      <end_offset>97</end_offset>
+      <tag_text>участник датчик 3</tag_text>
+      <font_colour>#222222</font_colour>
+      <note_colour>#9AFAFF</note_colour>
+    </TAG>
+    <TAG id="18">
+      <start_offset>94</start_offset>
+      <end_offset>95</end_offset>
+      <tag_text>участник датчик 2</tag_text>
+      <font_colour>#222222</font_colour>
+      <note_colour>#9AFAFF</note_colour>
+    </TAG>
+    <TAG id="17">
+      <start_offset>92</start_offset>
+      <end_offset>93</end_offset>
+      <tag_text>участник датчик 1</tag_text>
+      <font_colour>#222222</font_colour>
+      <note_colour>#9AFAFF</note_colour>
+    </TAG>
     <TAG id="16">
       <start_offset>88</start_offset>
       <end_offset>89</end_offset>
