@@ -35,7 +35,7 @@ parseHeaderHead cch ch = do
     <*> parseDTMtext
     <*> parseDTMtext
     <*> getWord16le             -- diam 
-    <*> ((\x -> (fromIntegral x) / 10) <$> getWord16le) -- thick
+    <*> ((/10) . fromIntegral <$> getWord16le) -- thick
     <*> getWord8                                       -- block
     <*> getWord8                                       -- temper
     <*> (skip 1 >> getWord16le) -- length
