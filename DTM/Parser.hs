@@ -1,10 +1,26 @@
+{-# LANGUAGE
+  OverloadedStrings
+  #-}  
+
 module DTM.Parser where
 
 import Control.Applicative
 import DTM.Types
+import Data.Monoid
 import Data.Serialize
-import Data.Text
+import Data.Word
 import qualified Data.ByteString as B
+import qualified Data.Text as T
+
+parseUntilEnd :: Get a -> Get [a]
+parseUntilEnd f = (($[]) . appEndo) <$> (parseUntilEnd' $ Endo id)
+  where
+    parseUntilEnd' ac = do 
+      remaining >>= \r -> case r of
+        0 -> return ac
+        _ -> do
+          x <- f
+          parseUntilEnd' $ ac <> Endo (x:)
 
 parseDateTime :: Get DateTime
 parseDateTime = do
@@ -40,9 +56,21 @@ parseHeaderHead cch ch = do
     <*> getWord8                                       -- temper
     <*> (skip 1 >> getWord16le) -- length
     <*> getWord16le             -- prod num
+    <*> (skip 2 >> getWord16le) -- arg1
+    <*> getWord16le             -- arg2
+    <*> getWord16le             -- arg3
+    <*> getWord16le             -- arg4
+    <*> getWord16le             -- common arg
     <*> return ch               -- chsum
     <*> return cch              -- calculated chsum
     
 
-parseDTMtext :: Get Text
-parseDTMtext = undefined
+parseDTMtext :: Get T.Text
+parseDTMtext = skip 32 >> return "undefined"
+
+parseSensors :: Get Sensors
+parseSensors = Sensors <$> get
+
+parseFullData :: Get FullData
+parseFullData = do
+  FullData <$> parseHeader <*> parseSensors
