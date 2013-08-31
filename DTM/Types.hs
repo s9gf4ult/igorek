@@ -2,7 +2,7 @@ module DTM.Types where
 
 import Data.Word
 import Data.Fixed
-import qualified Data.Text as T
+import qualified Data.Text.Lazy as T
 
 data DateTime = DateTime
                 { dYear :: Word8
@@ -11,7 +11,7 @@ data DateTime = DateTime
                 , dHour :: Word8
                 , dMinute :: Word8
                 , dSecond :: Word8
-                }
+                } deriving (Show, Eq)
 
 data Header = Header
               { hMagicWords :: (Word8, Word8, Word8)
@@ -32,11 +32,12 @@ data Header = Header
               , hCommonArg :: Word16
               , hCheckSum :: Word8
               , hCalcualtedChSum :: Word8
-              }
+              } deriving (Show, Eq)
 
 newtype Sensors = Sensors [(Word16, Word16, Word16, Word16)]
+                  deriving (Show, Eq)
 
 data FullData = FullData
                 { fHeader :: Header
                 , fSensors :: Sensors
-                }
+                } deriving (Show, Eq)

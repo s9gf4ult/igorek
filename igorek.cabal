@@ -46,3 +46,24 @@ executable showData
                      , bytestring
                      , cereal
                      , text
+                     , time
+                     , iconv
+
+test-suite checkGen
+  type: exitcode-stdio-1.0
+  main-is: checkGen.hs
+  other-modules:   DTM.Types
+                 , DTM.Parser
+                 , DTM.Generator
+
+  build-depends:       base < 5
+                     , QuickCheck
+                     , bytestring
+                     , derive
+                     , cereal
+                     , iconv
+                     , quickcheck-assertions
+                     , quickcheck-instances
+                     , test-framework
+                     , test-framework-quickcheck2
+                     , text

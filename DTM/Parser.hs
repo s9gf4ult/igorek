@@ -1,17 +1,18 @@
-{-# LANGUAGE
-  OverloadedStrings
-  #-}  
 
 module DTM.Parser where
 
+import Codec.Text.IConv (convert)
 import Control.Applicative
 import DTM.Types
 import Data.Monoid
 import Data.Serialize
 import Data.Word
 import qualified Data.ByteString as B
-import qualified Data.Text as T
-
+import qualified Data.ByteString.Lazy as BL
+import qualified Data.Text.Lazy as TL
+import qualified Data.Text.Lazy.Encoding as TL
+  
+  
 parseUntilEnd :: Get a -> Get [a]
 parseUntilEnd f = (($[]) . appEndo) <$> (parseUntilEnd' $ Endo id)
   where
@@ -65,11 +66,20 @@ parseHeaderHead cch ch = do
     <*> return cch              -- calculated chsum
     
 
-parseDTMtext :: Get T.Text
-parseDTMtext = skip 32 >> return "undefined"
+parseDTMtext :: Get TL.Text
+parseDTMtext = do
+  s <- getBytes 32
+  return $ TL.takeWhile (/= (toEnum 0)) $ TL.decodeUtf8
+    $ convert "cp1251" "utf-8" (BL.fromChunks [s, B.pack [0]])
 
 parseSensors :: Get Sensors
-parseSensors = Sensors <$> get
+parseSensors = Sensors <$> (parseUntilEnd
+                            $ (,,,)
+                            <$> getWord16le
+                            <*> getWord16le
+                            <*> getWord16le
+                            <*> getWord16le)
+                            
 
 parseFullData :: Get FullData
 parseFullData = do
