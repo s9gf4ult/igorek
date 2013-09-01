@@ -2,6 +2,7 @@ module Main where
 
 import DTM.Parser
 import DTM.Types
+import DTM.Helpers
 import Data.Time
 import Data.Serialize
 import System.Environment

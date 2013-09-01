@@ -9,15 +9,15 @@ import Control.Applicative
 import DTM.Generator
 import DTM.Parser
 import DTM.Types
-import Data.Serialize
-import Data.Word
 import Data.Derive.Arbitrary
 import Data.DeriveTH
+import Data.Serialize
+import Data.Word
 import Test.Framework.Providers.QuickCheck2
 import Test.Framework.Runners.Console
 import Test.QuickCheck
-import Test.QuickCheck.Instances ()
 import Test.QuickCheck.Assertions
+import Test.QuickCheck.Instances ()
 import qualified Data.Text.Lazy as TL
 import qualified Test.QuickCheck.Property as P
 
