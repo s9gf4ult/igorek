@@ -32,7 +32,7 @@ genFiles :: Deci -> Deci -> Word16 -> Word16 -> Word16 -> Word16 -> [(FilePath, 
 genFiles lowt hit lowd hid lowx hix = do
   t <- [lowt,lowt+1..hit]
   x@(a, b, c, d) <- grp4 [lowx..hix]
-  return (show $ round t ++ "." ++ show a ++ "-" ++ show d ++ ".dtm", gfd [lowd..hid] x t)
+  return ((show $ round t) ++ "." ++ show a ++ "-" ++ show d ++ ".dtm", gfd [lowd..hid] x t)
   where
     gfd d x t = FullData (ghdr t x) (gsns d)
     ghdr th (x1, x2, x3, x4) = Header { hMagicWords = (2, 2, 1)
