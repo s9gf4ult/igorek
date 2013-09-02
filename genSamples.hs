@@ -6,14 +6,15 @@ module Main where
 
 import Control.Monad
 import DTM.Generator
-import DTM.Types
 import DTM.Helpers
+import DTM.Types
+import Data.Fixed
+import Data.Serialize
 import Data.Time
 import Data.Word
-import Data.Serialize
 import System.Environment
-import qualified Data.Text.Lazy as T
 import qualified Data.ByteString as B
+import qualified Data.Text.Lazy as T
 
 grp4 :: [a] -> [(a,a,a,a)]
 grp4 (a:b:c:d:xs) = (a,b,c,d):(grp4 xs)
@@ -27,7 +28,7 @@ printHelp = putStrLn "usage: genSamples <low data> <high data> <low X> <high X>"
 writeFiles :: [(FilePath, FullData)] -> IO ()
 writeFiles x = forM_ x $ \(fp, fd) -> B.writeFile fp $ runPut $ genFullData fd
 
-genFiles :: Word8 -> Word8 -> Word16 -> Word16 -> Word16 -> Word16 -> [(FilePath, FullData)]
+genFiles :: Deci -> Deci -> Word16 -> Word16 -> Word16 -> Word16 -> [(FilePath, FullData)]
 genFiles lowt hit lowd hid lowx hix = do
   t <- [lowt..hit]
   x@(a, b, c, d) <- grp4 [lowx..hix]
