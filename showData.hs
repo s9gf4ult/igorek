@@ -5,6 +5,7 @@ import DTM.Types
 import DTM.Helpers
 import Data.Time
 import Data.Serialize
+import Data.List (intercalate)
 import System.Environment
 import qualified Data.Text.Lazy as T
 import qualified Data.ByteString as B
@@ -55,7 +56,7 @@ showSensors :: Sensors -> [String]
 showSensors (Sensors s) = map f $ zip [1..] s
   where
     f (n, (a, b, c, d)) = show n ++ ": "
-                          ++ concat $ intercalate ", " [show a, show b, show c, show d]
+                          ++ intercalate ", " [show a, show b, show c, show d]
 
 
 indent :: [String] -> [String]
