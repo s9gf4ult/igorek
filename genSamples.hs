@@ -30,7 +30,7 @@ writeFiles x = forM_ x $ \(fp, fd) -> B.writeFile fp $ runPut $ genFullData fd
 
 genFiles :: Deci -> Deci -> Word16 -> Word16 -> Word16 -> Word16 -> [(FilePath, FullData)]
 genFiles lowt hit lowd hid lowx hix = do
-  t <- [lowt..hit]
+  t <- [lowt,lowt+1..hit]
   x@(a, b, c, d) <- grp4 [lowx..hix]
   return (show t ++ "." ++ show a ++ "-" ++ show d ++ ".dtm", gfd [lowd..hid] x t)
   where
