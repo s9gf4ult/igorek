@@ -23,7 +23,7 @@ grp4 [a,b] = [(a,b,b,b)]
 grp4 [a] = [(a,a,a,a)]
 grp4 [] = []
 
-printHelp = putStrLn "usage: genSamples <low data> <high data> <low X> <high X>"
+printHelp = putStrLn "usage: genSamples <low thick> <hi thick> <low data> <high data> <low X> <high X>"
 
 writeFiles :: [(FilePath, FullData)] -> IO ()
 writeFiles x = forM_ x $ \(fp, fd) -> B.writeFile fp $ runPut $ genFullData fd
