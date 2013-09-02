@@ -4,10 +4,12 @@
 
 module Main where
 
+import Control.Monad
 import DTM.Generator
 import DTM.Types
 import DTM.Helpers
 import Data.Time
+import Data.Word
 import Data.Serialize
 import System.Environment
 import qualified Data.Text.Lazy as T
@@ -37,7 +39,7 @@ genFiles lowd hid lowx hix = do
                                    , hPlot = ""
                                    , hProduct = ""
                                    , hDiameter = 720
-                                   , hThickness = 4 --  FIXME: generate
+                                   , hThickness = 14 --  FIXME: generate
                                    , hBlock = 129
                                    , hTemperature = 27
                                    , hLength = 1248
