@@ -52,7 +52,10 @@ showFull (FullData hd sn) = (showHeader hd)
                            ++ (showSensors sn)
 
 showSensors :: Sensors -> [String]
-showSensors (Sensors s) = map show s
+showSensors (Sensors s) = map f $ zip [1..] s
+  where
+    f (n, (a, b, c, d)) = show n ++ ": "
+                          ++ concat $ intercalate ", " [show a, show b, show c, show d]
 
 
 indent :: [String] -> [String]
