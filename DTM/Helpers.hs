@@ -2,12 +2,13 @@
 module DTM.Helpers where
 
 
-import System.IO
-import DTM.Types
-import DTM.Parser
 import DTM.Generator
+import DTM.Parser
+import DTM.Types
 import Data.Serialize
+import Data.Time
 import Data.Word
+import System.IO
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as BL
 import qualified Data.Text.Lazy as TL
@@ -32,3 +33,15 @@ mapDTM fn maper = do
     Right res -> do
       let new = maper res
       B.writeFile fn $ runPut $ genFullData new
+
+
+dtToLocalTime :: DateTime -> LocalTime 
+dtToLocalTime (DateTime y m d h mm sec) = LocalTime
+                                          (fromGregorian
+                                           (2000 + toInteger y)
+                                           (fromIntegral m)
+                                           (fromIntegral d))
+                                          (TimeOfDay
+                                           (fromIntegral h)
+                                           (fromIntegral mm)
+                                           (fromIntegral sec))

@@ -11,16 +11,6 @@ import qualified Data.Text.Lazy as T
 import qualified Data.ByteString as B
 
 
-dtToLocalTime :: DateTime -> LocalTime 
-dtToLocalTime (DateTime y m d h mm sec) = LocalTime
-                                          (fromGregorian
-                                           (2000 + toInteger y)
-                                           (fromIntegral m)
-                                           (fromIntegral d))
-                                          (TimeOfDay
-                                           (fromIntegral h)
-                                           (fromIntegral mm)
-                                           (fromIntegral sec))
 
 showDateTime :: DateTime -> [String]
 showDateTime x = [show $ dtToLocalTime x]

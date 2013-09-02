@@ -61,6 +61,19 @@ executable showData
                      , time
                      , iconv
 
+executable genSamples
+  main-is:             genSamples.hs
+  -- other-modules:
+  ghc-options: -Wall
+  build-depends:       base < 5
+                     , bytestring
+                     , cereal
+                     , text
+                     , time
+                     , iconv
+
+                     
+
 test-suite checkGen
   type: exitcode-stdio-1.0
   main-is: checkGen.hs
