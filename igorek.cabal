@@ -21,7 +21,7 @@ library
                     , text
                     , iconv
                     , time
- 
+
  exposed-modules:  DTM.Types
                  , DTM.Parser
                  , DTM.Generator
@@ -73,7 +73,19 @@ executable genSamples
                      , time
                      , iconv
 
-                     
+
+executable genData
+  main-is:             genData.hs
+  -- other-modules:
+  ghc-options: -Wall
+  build-depends:       base < 5
+                     , bytestring
+                     , cereal
+                     , text
+                     , time
+                     , iconv
+
+
 
 test-suite checkGen
   type: exitcode-stdio-1.0
