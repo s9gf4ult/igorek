@@ -6,7 +6,7 @@ module Main where
 
 import Control.Monad
 import DTM.Generator
-import DTM.Helpers
+-- import DTM.Helpers
 import DTM.Types
 import Data.Fixed
 import Data.Serialize

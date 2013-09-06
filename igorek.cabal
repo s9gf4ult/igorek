@@ -21,6 +21,7 @@ library
                     , text
                     , iconv
                     , time
+                    , attoparsec
 
  exposed-modules:  DTM.Types
                  , DTM.Parser
@@ -61,6 +62,7 @@ executable showData
                      , text
                      , time
                      , iconv
+                     , attoparsec
 
 executable genSamples
   main-is:             genSamples.hs
@@ -84,6 +86,10 @@ executable genData
                      , text
                      , time
                      , iconv
+                     , random
+                     , MonadRandom
+                     , normaldistribution
+                     , attoparsec
 
 
 
