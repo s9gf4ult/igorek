@@ -140,7 +140,7 @@ compParser = sepBy1' comp (skipSpace >> (char ',') >> skipSpace)
     digToComp (DRange a b) (Digit c) = CompRange 1 (SinComponent a c) (SinComponent b c)
     
 
-randomSensors :: (RandomGen g) => Int -> Double -> [CompRange] -> [CompRange] -> Rand g ([Double], [Double], [Double], [Double])
+randomSensors :: (MonadRandom mr, Functor mr) => Int -> Double -> [CompRange] -> [CompRange] -> mr ([Double], [Double], [Double], [Double])
 randomSensors len hi comR specR = do
   com <- concat <$> mapM rangeToComp comR
   spec <- concat <$> mapM rangeToComp specR

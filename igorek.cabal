@@ -92,7 +92,10 @@ executable genData
                      , random
                      , text
                      , time
-
+                     , cassava
+                     , unordered-containers
+                     , vector
+                     , transformers
 
 
 test-suite checkGen
