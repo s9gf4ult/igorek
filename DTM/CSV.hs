@@ -74,18 +74,20 @@ instance FromNamedRecord CSVInput where
 
 dateAttoParser :: Parser DateTime
 dateAttoParser = do
-  y <- decimal
+  yd1 <- decimal
   dash
   m <- decimal
   dash
-  d <- decimal
+  yd2 <- decimal
   skipSpace
   h <- decimal
   sem
   mn <- decimal
   sem
   sc <- decimal
-  return $ DateTime (fromInteger $ y - 2000) m d h mn sc
+  return $ if (yd1 > 2000)
+           then DateTime (fromInteger $ yd1 - 2000) m (fromInteger yd2) h mn sc
+           else DateTime (fromInteger $ yd2 - 2000) m (fromInteger yd1) h mn sc
   
 
   where
