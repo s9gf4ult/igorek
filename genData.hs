@@ -127,26 +127,11 @@ main = do
                                 (fromMaybe 0 $ ciHigh csv)
                                 (fromMaybe [] $ ciCommon csv)
                                 (fromMaybe [] $ ciSpecific csv)
-                -- dts <- (,,,)
-                --        <$> (toRational <$> getRandomR (450, 470))
-                --        <*> (toRational <$> getRandomR (450, 470))
-                --        <*> (toRational <$> getRandomR (450, 470))
-                --        <*> (toRational <$> getRandomR (450, 470))
+                [aa, bb, cc, dd] <- map toRational <$> (replicateM 4 $ getRandomR (450, 470 :: Double))
                 let fd = genData
-                         $ InitialData (470, 470, 470, 470) --  FIXME: 
+                         $ InitialData (aa, bb, cc, dd)
                          (map toRational a, map toRational b, map toRational c, map toRational d)
                          (headerFromCSV csv)
                 lift $ B.writeFile (fromMaybe "out.dtm" $ ciFile csv)
                   $ runPut $ genFullData fd
                 lift $ putStrLn $ "file done: " ++ (fromMaybe "" $ ciFile csv)
-
-
-
-
-      -- let mopts = mergeOptions opts
-      -- let (a, b, c, d) = evalRand (randomSensors 500 (fromMaybe 0 $ dHigh mopts) (dCommon mopts) (dSpec mopts)) g
-      -- B.writeFile "out.dtm" $ runPut $ genFullData $ genData
-      --   $ InitialData (470, 470, 470, 470)
-      --   (map toRational a, map toRational b, map toRational c, map toRational d)
-      --   $ Header (2, 2, 1) (DateTime 0 0 0 0 0 0) (DateTime 0 0 0 0 0 0) "" "" 500 17
-      --   250 27 0 205 0 0 0 0 0 0 0
