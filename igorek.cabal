@@ -16,12 +16,13 @@ cabal-version:       >=1.8
 
 library
  build-depends:       base < 5
+                    , MonadRandom
+                    , attoparsec
                     , bytestring
                     , cereal
-                    , text
                     , iconv
+                    , text
                     , time
-                    , attoparsec
 
  exposed-modules:  DTM.Types
                  , DTM.Parser
@@ -57,12 +58,13 @@ executable showData
   -- other-modules:
   ghc-options: -Wall
   build-depends:       base < 5
+                     , MonadRandom
+                     , attoparsec
                      , bytestring
                      , cereal
+                     , iconv
                      , text
                      , time
-                     , iconv
-                     , attoparsec
 
 executable genSamples
   main-is:             genSamples.hs
@@ -71,9 +73,9 @@ executable genSamples
   build-depends:       base < 5
                      , bytestring
                      , cereal
+                     , iconv
                      , text
                      , time
-                     , iconv
 
 
 executable genData
@@ -81,15 +83,15 @@ executable genData
   -- other-modules:
   ghc-options: -Wall
   build-depends:       base < 5
+                     , MonadRandom
+                     , attoparsec
                      , bytestring
                      , cereal
+                     , iconv
+                     , normaldistribution
+                     , random
                      , text
                      , time
-                     , iconv
-                     , random
-                     , MonadRandom
-                     , normaldistribution
-                     , attoparsec
 
 
 
