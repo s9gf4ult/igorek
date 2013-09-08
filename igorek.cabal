@@ -23,17 +23,18 @@ library
                     , iconv
                     , text
                     , time
+                    , vector
 
  exposed-modules:  DTM.Types
                  , DTM.Parser
                  , DTM.Generator
                  , DTM.Helpers
 
-executable igorek
-  main-is:             igorek.hs
-  -- other-modules:
-  build-depends:       base < 5
-                     , gtk
+-- executable igorek
+--   main-is:             igorek.hs
+--   -- other-modules:
+--   build-depends:       base < 5
+--                      , gtk
 
 
 executable checksum
@@ -65,6 +66,7 @@ executable showData
                      , iconv
                      , text
                      , time
+                     , vector
 
 executable genSamples
   main-is:             genSamples.hs

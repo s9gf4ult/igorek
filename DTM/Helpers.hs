@@ -1,3 +1,6 @@
+{-# LANGUAGE
+  ScopedTypeVariables
+  #-}
 
 module DTM.Helpers where
 
@@ -10,9 +13,11 @@ import DTM.Parser
 import DTM.Types
 import Data.Serialize (runGet, runPut)
 import Data.Time
+import qualified Data.Vector as V
+import Data.List (foldl')
 import Data.Word
 import Data.Ratio
-import Data.Attoparsec.Text.Lazy  
+import Data.Attoparsec.Text.Lazy
 import Data.List (zip4, genericLength, foldl')
 import System.IO
 import qualified Data.ByteString as B
@@ -49,7 +54,7 @@ makeMSensors f = \x -> x {fSensors = ms $ fSensors x}
 
 mapT1 :: (a -> a) -> ((a, b, c, d) -> (a, b, c, d))
 mapT1 f = \(a, b, c, d) -> (f a, b, c ,d)
-  
+
 
 mapDTM :: FilePath -> (FullData -> FullData) -> IO ()
 mapDTM fn maper = do
@@ -61,7 +66,7 @@ mapDTM fn maper = do
       B.writeFile fn $ runPut $ genFullData new
 
 
-dtToLocalTime :: DateTime -> LocalTime 
+dtToLocalTime :: DateTime -> LocalTime
 dtToLocalTime (DateTime y m d h mm sec) = LocalTime
                                           (fromGregorian
                                            (2000 + toInteger y)
@@ -105,7 +110,7 @@ genData (InitialData
               (map round $ genX y2 z2)
               (map round $ genX y3 z3)
               (map round $ genX y4 z4)
-                                          
+
 parseComp :: TL.Text -> [CompRange]
 parseComp t = case eitherResult $ parse compParser t of
   Left e -> error "sinus component must be in format: period:amplitude,period:amplitude..."
@@ -120,10 +125,24 @@ digitParser d = dRange <|> (Digit <$> d)
       b <- d
       return $ DRange a b
 
+parseIntRange :: (Integral a) => TL.Text -> (a, a)
+parseIntRange t = case eitherResult $ parse (digitParser decimal) t of
+  Left e -> error $ "could not parse \"" ++ (TL.unpack t) ++ "\" as int number range" ++ e
+  Right r -> case r of
+    Digit d -> (d, d)
+    DRange a b -> (a, b)
+
+parseRatRange :: (Fractional a) => TL.Text -> (a, a)
+parseRatRange t = case eitherResult $ parse (digitParser rational) t of
+  Left e -> error $ "could not parse \"" ++ (TL.unpack t) ++ "\" as rational number range" ++ e
+  Right r -> case r of
+    Digit d -> (d, d)
+    DRange a b -> (a, b)
+
 compParser :: Parser [CompRange]
 compParser = sepBy1' comp (skipSpace >> (char ',') >> skipSpace)
   where
-    comp = manyComp <|> oneComp 
+    comp = manyComp <|> oneComp
     manyComp = do
       c <- oneComp
       (skipSpace >> char 'x' >> skipSpace)
@@ -138,7 +157,7 @@ compParser = sepBy1' comp (skipSpace >> (char ',') >> skipSpace)
     digToComp (Digit a) (Digit b) = CompRepeat 1 $ SinComponent a b
     digToComp (Digit a) (DRange b c) = CompRange 1 (SinComponent a b) (SinComponent a c)
     digToComp (DRange a b) (Digit c) = CompRange 1 (SinComponent a c) (SinComponent b c)
-    
+
 
 randomSensors :: (MonadRandom mr, Functor mr) => Int -> Double -> [CompRange] -> [CompRange] -> mr ([Double], [Double], [Double], [Double])
 randomSensors len hi comR specR = do
@@ -163,3 +182,28 @@ randomSensors len hi comR specR = do
       x <- getRandomR (a, c)
       y <- getRandomR (b, d)
       return $ SinComponent x y
+
+
+addGaps :: (MonadRandom mr, Functor mr) => (Int, Int) -> (Double, Double) -> FullData -> mr FullData
+addGaps cc rr fd = do
+  c <- getRandomR cc
+  r <- (/100) <$> getRandomR rr
+  let l = hLength $ fHeader fd
+      gl = round $ (fromIntegral l) * r
+      ga = gl `div` (fromIntegral c)
+
+  ll <- replicateM c $ getRandomR (0, fromIntegral $ 2 * ga)
+  case sum ll > fromIntegral gl of
+    True -> addGaps cc rr fd
+    False -> do
+      places <- replicateM c $ getRandomR (0, fromIntegral l)
+      let (Sensors ss) = fSensors fd
+          news = mapSensors (zip places ll) ss
+      return $ fd { fSensors = Sensors news }
+
+  where
+
+    mapSensors dps sns = V.toList $ foldl' foldVector (V.fromList sns) dps
+    foldVector vec (place, len) = V.imap (\i v -> if (i*2 >= place) && (i*2 <= place + len)
+                                                  then (maxBound, maxBound, maxBound, maxBound)
+                                                  else v) vec

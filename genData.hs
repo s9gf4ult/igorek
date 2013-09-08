@@ -33,6 +33,8 @@ data COption = CHelp
              | SpecComp [CompRange]
              | Thickness Double
              | CFile FilePath
+             | GapCount (Int, Int)
+             | GapRatio (Double, Double)
              deriving (Show, Eq)
 
 data DOption = DOption
@@ -40,6 +42,8 @@ data DOption = DOption
                , dSpec :: [CompRange]
                , dHigh :: Maybe Double
                , dFile :: Maybe FilePath
+               , dGapCount :: Maybe (Int, Int)
+               , dGapRatio :: Maybe (Double, Double)
                }
                deriving (Show, Eq)
 
@@ -49,8 +53,14 @@ mergeOptions v = DOption
                  , dSpec = concat $ spec v
                  , dHigh = getLast $ mconcat $ map (Last . gethi) v
                  , dFile = getLast $ mconcat $ map (Last . getfile) v
+                 , dGapCount = getLast $ mconcat $ map (Last . getgapc) v
+                 , dGapRatio = getLast $ mconcat $ map (Last . getgapr) v
                  }
   where
+    getgapc (GapCount x) = Just x
+    getgapc _ = Nothing
+    getgapr (GapRatio x) = Just x
+    getgapr _ = Nothing
     cmn [] = []
     cmn ((CommonComp x):xs) = x:(cmn xs)
     cmn (_:xs) = cmn xs
@@ -68,6 +78,8 @@ optionsDescr = [ Option "h" ["help"] (NoArg CHelp) "show this message"
                , Option "s" ["specific"] (ReqArg (SpecComp . parseComp . T.pack) "arg") "specific sinus component"
                , Option "H" ["high"] (ReqArg (Thickness . read) "arg") "initial thickness, default is 0"
                , Option "f" ["file"] (ReqArg CFile "arg") "csv file with data to process"
+               , Option "g" ["gap-count"] (ReqArg (GapCount . parseIntRange . T.pack) "arg") "gap count, range or value"
+               , Option "G" ["gap-ratio"] (ReqArg (GapRatio . parseRatRange . T.pack) "arg") "gap ratio, range or value"
                ]
 
 
@@ -105,6 +117,7 @@ fixOptions mopts !ac csv = (ac + 1, fixcsv)
       "mtd." -> x
       _ -> x ++ ".dtm"
 
+
 main :: IO ()
 main = do
   (opts, _, _) <- (getOpt Permute optionsDescr) <$> getArgs
@@ -128,10 +141,11 @@ main = do
                                 (fromMaybe [] $ ciCommon csv)
                                 (fromMaybe [] $ ciSpecific csv)
                 [aa, bb, cc, dd] <- map toRational <$> (replicateM 4 $ getRandomR (450, 470 :: Double))
-                let fd = genData
-                         $ InitialData (aa, bb, cc, dd)
-                         (map toRational a, map toRational b, map toRational c, map toRational d)
-                         (headerFromCSV csv)
+                let sfd = genData
+                          $ InitialData (aa, bb, cc, dd)
+                          (map toRational a, map toRational b, map toRational c, map toRational d)
+                          (headerFromCSV csv)
+                fd <- addGaps (fromMaybe (0, 4) $ dGapCount mopts) (fromMaybe (5,15) $ dGapRatio mopts) sfd
                 lift $ B.writeFile (fromMaybe "out.dtm" $ ciFile csv)
                   $ runPut $ genFullData fd
                 lift $ putStrLn $ "file done: " ++ (fromMaybe "" $ ciFile csv)
