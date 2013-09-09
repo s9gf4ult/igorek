@@ -12,16 +12,18 @@ import Control.Monad
 import Control.Monad.Random
 import Control.Monad.Trans.Class
 import DTM.CSV
-import Data.Char (toLower)
 import DTM.Generator
 import DTM.Helpers
 import DTM.Types
+import Data.Char (toLower)
 import Data.List (mapAccumL)
 import Data.Maybe
 import Data.Monoid
 import Data.Serialize
+import GHC.Conc (getNumCapabilities)
 import System.Console.GetOpt
 import System.Environment
+import qualified Control.Concurrent.ParallelIO.Local as P
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as BL
 import qualified Data.Csv as C
@@ -133,19 +135,21 @@ main = do
             Left e -> error e
             Right (_, v) -> do
               let (_, csvinps) =  mapAccumL (fixOptions mopts) 0 $ V.toList v
-              g <- newStdGen
-              (flip evalRandT) g $ forM_ csvinps $ \csv -> do
-                snsrs <- randomSensors
-                         (fromIntegral $ ciLength csv)
-                         (fromMaybe 0 $ ciHigh csv)
-                         (fromMaybe [] $ ciCommon csv)
-                         (fromMaybe [] $ ciSpecific csv)
-                [aa, bb, cc, dd] <- replicateM 4 $ getRandomR (450, 470)
-                let sfd = genData
-                          $ InitialData (aa, bb, cc, dd)
-                          snsrs
-                          (headerFromCSV csv)
-                fd <- addGaps (fromMaybe (0, 4) $ dGapCount mopts) (fromMaybe (5,15) $ dGapRatio mopts) sfd
-                lift $ B.writeFile (fromMaybe "out.dtm" $ ciFile csv)
-                  $ runPut $ genFullData fd
-                lift $ putStrLn $ "file done: " ++ (fromMaybe "" $ ciFile csv)
+              gs <- (map mkStdGen . randoms) <$> newStdGen
+              caps <- getNumCapabilities
+              P.withPool caps $ \pool -> do
+                P.parallel_ pool $ (flip map) (zip gs csvinps) $ \(g, csv) -> (flip evalRandT) g $ do
+                  snsrs <- randomSensors
+                           (fromIntegral $ ciLength csv)
+                           (fromMaybe 0 $ ciHigh csv)
+                           (fromMaybe [] $ ciCommon csv)
+                           (fromMaybe [] $ ciSpecific csv)
+                  [aa, bb, cc, dd] <- replicateM 4 $ getRandomR (450, 470)
+                  let sfd = genData
+                            $ InitialData (aa, bb, cc, dd)
+                            snsrs
+                            (headerFromCSV csv)
+                  fd <- addGaps (fromMaybe (0, 4) $ dGapCount mopts) (fromMaybe (5,15) $ dGapRatio mopts) sfd
+                  lift $ B.writeFile (fromMaybe "out.dtm" $ ciFile csv)
+                    $ runPut $ genFullData fd
+                  lift $ putStrLn $ "file done: " ++ (fromMaybe "" $ ciFile csv)

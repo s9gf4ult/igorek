@@ -104,6 +104,7 @@ executable genData
                      , transformers
                      , deepseq-th
                      , deepseq
+                     , parallel-io
 
 
 test-suite checkGen
