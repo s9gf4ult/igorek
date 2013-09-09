@@ -24,6 +24,8 @@ library
                     , text
                     , time
                     , vector
+                    , deepseq
+                    , deepseq-th
 
  exposed-modules:  DTM.Types
                  , DTM.Parser
@@ -67,6 +69,8 @@ executable showData
                      , text
                      , time
                      , vector
+                     , deepseq-th
+                     , deepseq
 
 executable genSamples
   main-is:             genSamples.hs
@@ -98,6 +102,8 @@ executable genData
                      , unordered-containers
                      , vector
                      , transformers
+                     , deepseq-th
+                     , deepseq
 
 
 test-suite checkGen

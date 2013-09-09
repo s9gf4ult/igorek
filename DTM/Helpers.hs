@@ -5,6 +5,8 @@
 module DTM.Helpers where
 
 
+import Control.DeepSeq.TH
+import Control.DeepSeq
 import Control.Monad.Random
 import Control.Applicative
 import Control.Monad
@@ -169,10 +171,10 @@ randomSensors len hi comR specR = do
   phaseb <- mapM newPhase spec
   phasec <- mapM newPhase spec
   phased <- mapM newPhase spec
-  return (map (+hi) $ zipWith (+) cdata $ genSins $ zip phasea spec,
-          map (+hi) $ zipWith (+) cdata $ genSins $ zip phaseb spec,
-          map (+hi) $ zipWith (+) cdata $ genSins $ zip phasec spec,
-          map (+hi) $ zipWith (+) cdata $ genSins $ zip phased spec)
+  return $ force (map (+hi) $ zipWith (+) cdata $ genSins $ zip phasea spec,
+                  map (+hi) $ zipWith (+) cdata $ genSins $ zip phaseb spec,
+                  map (+hi) $ zipWith (+) cdata $ genSins $ zip phasec spec,
+                  map (+hi) $ zipWith (+) cdata $ genSins $ zip phased spec)
   where
     newPhase (SinComponent p _) = getRandomR (0, p*2)
     genSins p = foldl' (zipWith (+)) (replicate ((div len 2)+1) 0) $ map genSin p
