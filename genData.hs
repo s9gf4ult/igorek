@@ -80,8 +80,8 @@ optionsDescr = [ Option "h" ["help"] (NoArg CHelp) "show this message"
                , Option "s" ["specific"] (ReqArg (SpecComp . parseComp . T.pack) "arg") "specific sinus component"
                , Option "H" ["high"] (ReqArg (Thickness . read) "arg") "initial thickness, default is 0"
                , Option "f" ["file"] (ReqArg CFile "arg") "csv file with data to process"
-               , Option "g" ["gap-count"] (ReqArg (GapCount . parseIntRange . T.pack) "arg") "gap count, range or value"
-               , Option "G" ["gap-ratio"] (ReqArg (GapRatio . parseRatRange . T.pack) "arg") "gap ratio, range or value"
+               , Option "g" ["gap-count"] (ReqArg (GapCount . parseIntRange . T.pack) "arg") "gap count, default is 5-15"
+               , Option "G" ["gap-ratio"] (ReqArg (GapRatio . parseRatRange . T.pack) "arg") "gap ratio, default is 7-15"
                ]
 
 
@@ -149,7 +149,7 @@ main = do
                             $ InitialData (aa, bb, cc, dd)
                             snsrs
                             (headerFromCSV csv)
-                  fd <- addGaps (fromMaybe (0, 4) $ dGapCount mopts) (fromMaybe (5,15) $ dGapRatio mopts) sfd
+                  fd <- addGaps (fromMaybe (5, 15) $ dGapCount mopts) (fromMaybe (7,15) $ dGapRatio mopts) sfd
                   lift $ B.writeFile (fromMaybe "out.dtm" $ ciFile csv)
                     $ runPut $ genFullData fd
                   lift $ putStrLn $ "file done: " ++ (fromMaybe "" $ ciFile csv)
