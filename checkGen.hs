@@ -20,6 +20,8 @@ import Test.QuickCheck.Assertions
 import Test.QuickCheck.Instances ()
 import qualified Data.Text.Lazy as TL
 import qualified Test.QuickCheck.Property as P
+import qualified Data.Vector.Unboxed as U
+  
 
 arbSafeText :: Gen TL.Text
 arbSafeText = TL.pack <$> ((flip suchThat) ((<32) . length) $ listOf $ elements
@@ -50,7 +52,7 @@ instance Arbitrary Header where
 
 $( derive makeArbitrary ''DateTime )
 instance Arbitrary Sensors where
-  arbitrary = Sensors <$> arbitrary
+  arbitrary = (Sensors . U.fromList) <$> arbitrary
 $( derive makeArbitrary ''FullData )
 
 cmpFD :: FullData -> FullData -> Property

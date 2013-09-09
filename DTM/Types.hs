@@ -3,6 +3,8 @@ module DTM.Types where
 import Data.Word
 import Data.Fixed
 import qualified Data.Text.Lazy as T
+import qualified Data.Vector.Unboxed as U
+  
 
 data DateTime = DateTime
                 { dYear :: Word8
@@ -34,7 +36,8 @@ data Header = Header
               , hCalcualtedChSum :: Word8
               } deriving (Show, Eq)
 
-newtype Sensors = Sensors [(Word16, Word16, Word16, Word16)]
+type SensorsData = U.Vector (Word16, Word16, Word16, Word16)
+newtype Sensors = Sensors SensorsData
                   deriving (Show, Eq)
 
 data FullData = FullData

@@ -135,15 +135,15 @@ main = do
               let (_, csvinps) =  mapAccumL (fixOptions mopts) 0 $ V.toList v
               g <- newStdGen
               (flip evalRandT) g $ forM_ csvinps $ \csv -> do
-                (a, b, c, d) <- randomSensors
-                                (fromIntegral $ ciLength csv)
-                                (fromMaybe 0 $ ciHigh csv)
-                                (fromMaybe [] $ ciCommon csv)
-                                (fromMaybe [] $ ciSpecific csv)
-                [aa, bb, cc, dd] <- map toRational <$> (replicateM 4 $ getRandomR (450, 470 :: Double))
+                snsrs <- randomSensors
+                         (fromIntegral $ ciLength csv)
+                         (fromMaybe 0 $ ciHigh csv)
+                         (fromMaybe [] $ ciCommon csv)
+                         (fromMaybe [] $ ciSpecific csv)
+                [aa, bb, cc, dd] <- replicateM 4 $ getRandomR (450, 470)
                 let sfd = genData
                           $ InitialData (aa, bb, cc, dd)
-                          (map toRational a, map toRational b, map toRational c, map toRational d)
+                          snsrs
                           (headerFromCSV csv)
                 fd <- addGaps (fromMaybe (0, 4) $ dGapCount mopts) (fromMaybe (5,15) $ dGapRatio mopts) sfd
                 lift $ B.writeFile (fromMaybe "out.dtm" $ ciFile csv)

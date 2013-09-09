@@ -1,15 +1,14 @@
 module DTM.Generator where
 
 import Codec.Text.IConv (convert)
-import Control.Applicative
 import DTM.Types
 import Data.Monoid
 import Data.Serialize
-import Data.Word
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as BL
 import qualified Data.Text.Lazy as TL
 import qualified Data.Text.Lazy.Encoding as TL
+import qualified Data.Vector.Unboxed as U
 
 
 genText :: Putter TL.Text
@@ -66,7 +65,7 @@ genHeader h = do
     bl = fromIntegral $ B.length b
 
 genSensors :: Putter Sensors
-genSensors (Sensors sns) = mapM_ putCh sns
+genSensors (Sensors sns) = mapM_ putCh $ U.toList sns
   where
     putCh (a, b, c, d) = do
       putWord16le a

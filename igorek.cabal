@@ -56,32 +56,32 @@ executable chfixer
                      , bytestring
 
 
-executable showData
-  main-is:             showData.hs
-  -- other-modules:
-  ghc-options: -Wall
-  build-depends:       base < 5
-                     , MonadRandom
-                     , attoparsec
-                     , bytestring
-                     , cereal
-                     , iconv
-                     , text
-                     , time
-                     , vector
-                     , deepseq-th
-                     , deepseq
+-- executable showData
+--   main-is:             showData.hs
+--   -- other-modules:
+--   ghc-options: -Wall
+--   build-depends:       base < 5
+--                      , MonadRandom
+--                      , attoparsec
+--                      , bytestring
+--                      , cereal
+--                      , iconv
+--                      , text
+--                      , time
+--                      , vector
+--                      , deepseq-th
+--                      , deepseq
 
-executable genSamples
-  main-is:             genSamples.hs
-  -- other-modules:
-  ghc-options: -Wall
-  build-depends:       base < 5
-                     , bytestring
-                     , cereal
-                     , iconv
-                     , text
-                     , time
+-- executable genSamples
+--   main-is:             genSamples.hs
+--   -- other-modules:
+--   ghc-options: -Wall
+--   build-depends:       base < 5
+--                      , bytestring
+--                      , cereal
+--                      , iconv
+--                      , text
+--                      , time
 
 
 executable genData
@@ -124,3 +124,4 @@ test-suite checkGen
                      , test-framework
                      , test-framework-quickcheck2
                      , text
+                     , vector

@@ -11,6 +11,7 @@ import qualified Data.ByteString as B
 import qualified Data.ByteString.Lazy as BL
 import qualified Data.Text.Lazy as TL
 import qualified Data.Text.Lazy.Encoding as TL
+import qualified Data.Vector.Unboxed as U
   
   
 parseUntilEnd :: Get a -> Get [a]
@@ -73,12 +74,12 @@ parseDTMtext = do
     $ convert "cp1251" "utf-8" (BL.fromChunks [s, B.pack [0]])
 
 parseSensors :: Get Sensors
-parseSensors = Sensors <$> (parseUntilEnd
-                            $ (,,,)
-                            <$> getWord16le
-                            <*> getWord16le
-                            <*> getWord16le
-                            <*> getWord16le)
+parseSensors = (Sensors . U.fromList) <$> (parseUntilEnd
+                                           $ (,,,)
+                                           <$> getWord16le
+                                           <*> getWord16le
+                                           <*> getWord16le
+                                           <*> getWord16le)
                             
 
 parseFullData :: Get FullData
