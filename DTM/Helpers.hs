@@ -159,15 +159,15 @@ compParser = sepBy1' comp (skipSpace >> (char ',') >> skipSpace)
 
 randomSensors :: forall mr. (MonadRandom mr, Functor mr) => Int -> Double -> [CompRange] -> [CompRange] -> mr (U.Vector Double, U.Vector Double, U.Vector Double, U.Vector Double)
 randomSensors len hi comR specR = do
-  com <- (U.fromList . concat) <$> mapM rangeToComp comR
-  spec1 <- com `seq` (U.fromList . concat) <$> mapM rangeToComp specR
-  spec2 <- spec1 `seq` (U.fromList . concat) <$> mapM rangeToComp specR
-  spec3 <- spec2 `seq` (U.fromList . concat) <$> mapM rangeToComp specR
-  spec4 <- spec3 `seq` (U.fromList . concat) <$> mapM rangeToComp specR
-  return $ force (mergeComps com spec1,
-                  mergeComps com spec2,
-                  mergeComps com spec3,
-                  mergeComps com spec4)
+  com <- (genSins . U.fromList . concat) <$> mapM rangeToComp comR
+  spec1 <- (genSins . U.fromList . concat) <$> mapM rangeToComp specR
+  spec2 <- (genSins . U.fromList . concat) <$> mapM rangeToComp specR
+  spec3 <- (genSins . U.fromList . concat) <$> mapM rangeToComp specR
+  spec4 <- (genSins . U.fromList . concat) <$> mapM rangeToComp specR
+  return $ force (U.zipWith (\a b -> a + b + hi) com spec1,
+                  U.zipWith (\a b -> a + b + hi) com spec2,
+                  U.zipWith (\a b -> a + b + hi) com spec3,
+                  U.zipWith (\a b -> a + b + hi) com spec4)
   where
     rangeToComp :: CompRange -> mr [(Double, SinComponent)]
     rangeToComp (CompRepeat i c@(per, _)) = replicateM i $ do
@@ -179,22 +179,11 @@ randomSensors len hi comR specR = do
       ph <- getRandomR (0, 2 * per)
       return (ph, (per, amp))
 
-    mergeComps :: U.Vector (Double, SinComponent) -> U.Vector (Double, SinComponent) -> U.Vector Double
-    mergeComps com spec = U.zipWith (\a b -> a + b + hi) (genSins com) (genSins spec)
-  
     genSins :: U.Vector (Double, SinComponent) -> U.Vector Double
     genSins comps = U.fromList $ map (genSin comps) [0,2..fromIntegral len]
 
     genSin :: U.Vector (Double, SinComponent) -> Double -> Double
     genSin comps x = U.foldl' (\res (ph, (per, amp)) -> res + (amp * (sin $ (x/per*2*pi)+ph ))) 0 comps
-    -- newPhase (SinComponent p _) = getRandomR (0, p*2)
-    -- genSins p = foldl' (zipWith (+)) (replicate ((div len 2)+1) 0) $ map genSin p
-    -- genSin (ph, (SinComponent per ampl)) = map (\x -> ampl * (sin ((x/per*2*pi) + ph))) [0,2..fromIntegral len]
-    -- rangeToComp (CompRepeat i c) = return $ replicate i c
-    -- rangeToComp (CompRange i (SinComponent a b) (SinComponent c d)) = replicateM i $ do
-    --   x <- getRandomR (a, c)
-    --   y <- getRandomR (b, d)
-    --   return $ SinComponent x y
 
 
 addGaps :: (MonadRandom mr, Functor mr) => (Int, Int) -> (Double, Double) -> FullData -> mr FullData
